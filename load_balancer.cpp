@@ -1,14 +1,8 @@
-#include "load_balancer.h"
+#include "load_balancer.hpp"
+#include "utils.hpp"
 
 using namespace std;
 
-string array_of_int_to_string(int int_input[2]){
-	string string_output;
-	stringstream ss;
-	ss << int_input;
-	string_output = ss.str();
-	return string_output;
-}
 
 LoadBalancer::LoadBalancer(string _input) {
 	input = _input;
@@ -20,24 +14,6 @@ void LoadBalancer::process_values() {
 	for (int i = 0; i < line.size(); ++i) {
 		values.push_back(split(line[i], '='));
 	}
-}
-
-vector<string> LoadBalancer::split(string text, char delimeter) {
-	text += ' ';
-    stringstream ss(text);
-    string item;
-    vector<string> splittedStrings;
-    int cnt = 0;
-    while (getline(ss, item, delimeter)) {
-    	if(cnt == 0) {
-	       	splittedStrings.push_back(item.substr(0, item.length()-1));
-    		cnt++;
-   	 	}
-	 	else {
- 		   	splittedStrings.push_back(item.substr(1, item.length()-2));
-	 	}
-    }
-    return splittedStrings;
 }
 
 string LoadBalancer::generate_worker_attributes(int fd[2]) {
@@ -62,9 +38,16 @@ void LoadBalancer::fork_worker() {
 	if (pipe(fd) == 0) {
 		write (fd[WRITE], data.c_str(), strlen(data.c_str())+1);
 		close (fd[WRITE]);
-		cout << "Wrote data : " << data << " ' to pipe" << endl;
 	} else {
-		cerr << "error in write" << endl;
+		cerr << "error in write into pipe !" << endl;
 	}
 	execl(worker_path, "worker", const_data, (char*)0);
+}
+
+int LoadBalancer::get_prc_cnt() {
+	for (int i = 0; i < values.size(); i++) {
+		if (values[i][0] == "prc_cnt") {
+			return string_to_int(values[i][1]);
+		} 
+	}
 }

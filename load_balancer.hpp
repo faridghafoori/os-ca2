@@ -15,7 +15,7 @@ class LoadBalancer {
 		LoadBalancer(std::string input);
 		void process_values();
 		void fork_worker();
-		std::vector<std::string> split(std::string text, char ch);
+		int get_prc_cnt();
 		std::string generate_worker_attributes(int fd[2]);
 	private:
 		std::string input;

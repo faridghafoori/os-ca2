@@ -2,8 +2,8 @@
 CC             = g++
 CFLAGS         = -c
 TARGET         = farid-ghafoori-CA2-810194465
-headers        = load_balancer.h
-objects        = main.o load_balancer.o
+headers        = load_balancer.hpp presenter.hpp utils.hpp
+objects        = main.o load_balancer.o presenter.o
 worker 		   = worker
 
 all: out
@@ -17,7 +17,10 @@ main.o: main.cpp $(headers)
 load_balancer.o: load_balancer.cpp $(headers)
 	$(CC) $(CFLAGS) load_balancer.cpp
 
-worker.o: worker.cpp
+presenter.o: presenter.cpp $(headers)
+	$(CC) $(CFLAGS) presenter.cpp
+
+worker.o: worker.cpp $(headers)
 	$(CC) $(CFLAGS) worker.cpp
 
 clean:

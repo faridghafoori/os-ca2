@@ -1,20 +1,29 @@
-#include "load_balancer.h"
+#include "load_balancer.hpp"
 
 using namespace std;
 
 int main(int argc, char const *argv[]) {
 	string input;
-	cout << "please enter your command : ";
-	getline(cin, input);
-	LoadBalancer lb(input);
-	if(fork() == 0) {
-		cout << "child" << endl;
-		cout << getpid() << endl;
-		lb.process_values();
-		lb.fork_worker();
+	int status;
+	while(true) {
+		cout << "please enter your command : ";
+		getline(cin, input);
+		if(input == "quit") {
+			break;
+		}
+		else {
+			LoadBalancer lb(input);
+			lb.process_values();
+			for (int i = 0; i < lb.get_prc_cnt(); i++) {
+				if(fork() == 0) {
+					// cout << "child: i = " << i << " pid : " << getpid() << endl;
+					lb.fork_worker();
+				} else {
+					wait(&status);
+				}
+			}
+		}
 	}
-	else {
-		cout << "parent" << endl;
-	}
+	cout << "Enter Quit Command." << endl;
 	return 0;
 }
