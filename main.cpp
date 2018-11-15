@@ -8,8 +8,10 @@ int main(int argc, char const *argv[]) {
 	getline(cin, input);
 	LoadBalancer lb(input);
 	if(fork() == 0) {
-		cout << "child" << getpid() << endl;
+		cout << "child" << endl;
+		cout << getpid() << endl;
 		lb.process_values();
+		lb.fork_worker();
 	}
 	else {
 		cout << "parent" << endl;
