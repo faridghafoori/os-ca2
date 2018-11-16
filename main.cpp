@@ -17,7 +17,7 @@ int main(int argc, char const *argv[]) {
 			for (int i = 0; i < lb.get_prc_cnt(); i++) {
 				if(fork() == 0) {
 					// cout << "child: i = " << i << " pid : " << getpid() << endl;
-					lb.fork_worker();
+					lb.fork_worker(lb.get_dir_name());
 				} else {
 					wait(&status);
 				}

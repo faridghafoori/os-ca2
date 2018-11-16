@@ -3,14 +3,17 @@
 #include <vector>
 #include <sstream>
 
+#define READ 0
+#define WRITE 1
+
 using namespace std;
 
-string array_of_int_to_string(int int_input[2]){
-	string string_output;
-	stringstream ss;
-	ss << int_input;
-	string_output = ss.str();
-	return string_output;
+string int_to_string(int int_input){
+    string string_output;
+    stringstream ss;
+    ss << int_input;
+    string_output = ss.str();
+    return string_output;
 }
 
 int string_to_int(string text) {

@@ -16,32 +16,31 @@ void LoadBalancer::process_values() {
 	}
 }
 
-string LoadBalancer::generate_worker_attributes(int fd[2]) {
-	string f_d = array_of_int_to_string(fd);
+string LoadBalancer::generate_worker_attributes() {
 	string filter = "";
-	filter += f_d + '&';
 	for (int i = 0; i < values.size(); i++){
-		filter += values[i][1] + '&';
+		for (int j = 0; j < values[i].size(); j++) {
+			filter += values[i][j] + '-';
+		}
+		filter += '&';
 	}
 	return filter;
 }
 
-void LoadBalancer::fork_worker() {
-	int fd[2], bytesRead;
-	// generate data for send to worker (id and filters)
-	string data = generate_worker_attributes(fd);
-	// convert string to char for send with pipe
-	char const_data[data.length()];
-	for (int i = 0; i < data.length(); i++) {
-		const_data[i] = data[i];
-	}
+void LoadBalancer::fork_worker(string dir_name) {
+	int fd[2];
+	cout << fd << endl;
 	if (pipe(fd) == 0) {
+		const char* fd0 = int_to_string(fd[READ]).c_str();
+		const char* fd1 = int_to_string(fd[WRITE]).c_str();
+		// generate data for send to worker (id and filters)
+		string data = generate_worker_attributes();
 		write (fd[WRITE], data.c_str(), strlen(data.c_str())+1);
 		close (fd[WRITE]);
+		execl (worker_path, "worker", fd0, fd1, dir_name.c_str(), (char*)0);
 	} else {
 		cerr << "error in write into pipe !" << endl;
 	}
-	execl(worker_path, "worker", const_data, (char*)0);
 }
 
 int LoadBalancer::get_prc_cnt() {
@@ -50,4 +49,14 @@ int LoadBalancer::get_prc_cnt() {
 			return string_to_int(values[i][1]);
 		} 
 	}
+	return 1;
+}
+
+string LoadBalancer::get_dir_name() {
+	for (int i = 0; i < values.size(); i++) {
+		if (values[i][0] == "dir") {
+			return values[i][1];
+		}
+	}
+	return " ";
 }

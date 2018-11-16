@@ -7,16 +7,14 @@
 #include <unistd.h>
 #include <sstream>
 
-#define READ 0
-#define WRITE 1
-
 class LoadBalancer {
 	public:
 		LoadBalancer(std::string input);
 		void process_values();
-		void fork_worker();
+		void fork_worker(std::string dir_name);
 		int get_prc_cnt();
-		std::string generate_worker_attributes(int fd[2]);
+		std::string get_dir_name();
+		std::string generate_worker_attributes();
 	private:
 		std::string input;
 		std::vector<std::vector<std::string> > values;
