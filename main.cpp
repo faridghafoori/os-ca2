@@ -14,10 +14,12 @@ int main(int argc, char const *argv[]) {
 		else {
 			LoadBalancer lb(input);
 			lb.process_values();
+			int counter = 0;
 			for (int i = 0; i < lb.get_prc_cnt(); i++) {
+				counter++;
 				if(fork() == 0) {
 					// cout << "child: i = " << i << " pid : " << getpid() << endl;
-					lb.fork_worker(lb.get_dir_name());
+					lb.fork_worker(lb.get_dir_name(), counter);
 				} else {
 					wait(&status);
 				}

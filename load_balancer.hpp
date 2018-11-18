@@ -11,7 +11,7 @@ class LoadBalancer {
 	public:
 		LoadBalancer(std::string input);
 		void process_values();
-		void fork_worker(std::string dir_name);
+		void fork_worker(std::string dir_name, int counter);
 		int get_prc_cnt();
 		std::string get_dir_name();
 		std::string generate_worker_attributes();

@@ -27,17 +27,18 @@ string LoadBalancer::generate_worker_attributes() {
 	return filter;
 }
 
-void LoadBalancer::fork_worker(string dir_name) {
+void LoadBalancer::fork_worker(string dir_name, int fork_count) {
 	int fd[2];
-	cout << fd << endl;
 	if (pipe(fd) == 0) {
 		const char* fd0 = int_to_string(fd[READ]).c_str();
 		const char* fd1 = int_to_string(fd[WRITE]).c_str();
+		const char* counter = int_to_string(fork_count).c_str();
+		const char* prc_cnt = int_to_string(get_prc_cnt()).c_str();
 		// generate data for send to worker (id and filters)
 		string data = generate_worker_attributes();
 		write (fd[WRITE], data.c_str(), strlen(data.c_str())+1);
 		close (fd[WRITE]);
-		execl (worker_path, "worker", fd0, fd1, dir_name.c_str(), (char*)0);
+		execl (worker_path, "worker", fd0, fd1, dir_name.c_str(), counter, prc_cnt, (char*)0);
 	} else {
 		cerr << "error in write into pipe !" << endl;
 	}
